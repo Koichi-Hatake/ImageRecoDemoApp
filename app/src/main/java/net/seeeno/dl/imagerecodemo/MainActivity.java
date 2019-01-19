@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements
         mTabLayout.setupWithViewPager(viewPager);
 
         mContext = getApplicationContext();
-        //mImageNetFragmet.initNetwork(mContext);
 
     }
 

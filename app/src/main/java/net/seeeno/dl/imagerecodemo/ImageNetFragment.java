@@ -204,7 +204,6 @@ public class ImageNetFragment extends AbstractDatasetFragment {
         TreeMap<Integer, Float> resultMap = new TreeMap<>();
         for (int i=0; i < predictArray.length; i++) {
             if (predictArray[i] != 0) {
-                //resultMap.put(Float.valueOf(predictArray[i]), Integer.valueOf(i));
                 resultMap.put(Integer.valueOf(i), Float.valueOf(predictArray[i]));
                 //Log.v(TAG,"Result:" + i  + ": " + predictArray[i]);
             }
@@ -213,7 +212,6 @@ public class ImageNetFragment extends AbstractDatasetFragment {
         Collections.sort(list_entries, new Comparator<Map.Entry<Integer, Float>>() {
             public int compare(Map.Entry<Integer, Float> obj1, Map.Entry<Integer, Float> obj2) {
                 return obj2.getValue().compareTo(obj1.getValue());
-                //return obj2.getKey().compareTo(obj1.getKey());
             }
         });
         int ctr=0;
