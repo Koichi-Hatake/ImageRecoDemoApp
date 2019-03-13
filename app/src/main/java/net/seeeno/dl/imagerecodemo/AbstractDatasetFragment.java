@@ -24,10 +24,7 @@ import java.util.List;
 public abstract class AbstractDatasetFragment extends Fragment {
 
     abstract public void doImageRecognition(Context context, Uri uri, String mimeType);
-    abstract public void initNetworkImpl(Context context) ;
-
-    protected native void nativeInitNeuralNetwork(String nppPath, String networkName);
-    protected native float[] nativePredict(int[] imageData);
+    abstract protected void initNetworkImpl(Context context) ;
 
     protected Bitmap openSelectedImage(Context context, Uri uri) {
 
@@ -56,30 +53,6 @@ public abstract class AbstractDatasetFragment extends Fragment {
         }
 
         return bitmap;
-    }
-
-    protected void copyNetworkFileInAssetsToLocal(Context context, String[] filelist) {
-
-        for (String nnp_file: filelist) {
-            try {
-                File nnpFile = new File(context.getFilesDir() + "/" + nnp_file);
-                // TODO: It should take another method to check.
-                if(nnpFile.exists()) {
-                    continue;
-                }
-                InputStream inputStream = context.getAssets().open(nnp_file);
-                FileOutputStream fileOutputStream = new FileOutputStream(nnpFile, false);
-                byte[] buffer = new byte[1024];
-                int length = 0;
-                while ((length = inputStream.read(buffer)) >= 0) {
-                    fileOutputStream.write(buffer, 0, length);
-                }
-                fileOutputStream.close();
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void initNetwork(Context context) {

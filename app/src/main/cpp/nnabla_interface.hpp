@@ -39,13 +39,16 @@ public:
     const float *predict(const int *rgb_data, const int len) {
 
         nbla::CgVariablePtr x = mExecutor->get_data_variables().at(0).variable;
-        //uint8_t *data = x->variable()->cast_data_and_get_pointer<uint8_t>(mContext);
-        uint32_t *data = x->variable()->cast_data_and_get_pointer<uint32_t>(mContext);
+        uint8_t *data = x->variable()->cast_data_and_get_pointer<uint8_t>(mContext);
+        //uint32_t *data = x->variable()->cast_data_and_get_pointer<uint32_t>(mContext);
         __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Input Length: %d", len);
         __android_log_print(ANDROID_LOG_VERBOSE, TAG, "Buffer Size: %d", x->variable()->size());
 
         // Copy RGB data array to input buffer.
-        std::memcpy(data, rgb_data, sizeof(uint32_t)*len);
+        //std::memcpy(data, rgb_data, sizeof(uint32_t)*len);
+        for (int i=0; i < len; i++) {
+            data[i] = (uint8_t)rgb_data[i];
+        }
 
         mExecutor->execute();
         nbla::CgVariablePtr y = mExecutor->get_output_variables().at(0).variable;

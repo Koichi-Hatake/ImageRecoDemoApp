@@ -19,7 +19,7 @@ static NNablaInterface snn;
  */
 extern "C" JNIEXPORT void
 JNICALL
-Java_net_seeeno_dl_imagerecodemo_AbstractDatasetFragment_nativeInitNeuralNetwork(
+Java_net_seeeno_dl_imagerecodemo_NNablaImageNetDAO_nativeInitNeuralNetwork(
         JNIEnv *env,
         jobject mgr,
         jstring nnpPath,
@@ -36,7 +36,7 @@ Java_net_seeeno_dl_imagerecodemo_AbstractDatasetFragment_nativeInitNeuralNetwork
  *
  */
 extern "C" JNIEXPORT const jfloatArray JNICALL
-Java_net_seeeno_dl_imagerecodemo_AbstractDatasetFragment_nativePredict(
+Java_net_seeeno_dl_imagerecodemo_NNablaImageNetDAO_nativePredict(
         JNIEnv *env,
         jobject obj,
         jintArray image_data
