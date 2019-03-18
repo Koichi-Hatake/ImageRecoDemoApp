@@ -9,7 +9,9 @@ import android.graphics.Bitmap;
 
 public interface ImageNetDAO {
     /** */
-    public void loadNetwork(Context context, ProgressHandler processHandler);
+    public void loadNetwork(Context context);
+    /** */
+    public int getLoadNetworkProgress();
     /** */
     public String getName();
     /** */

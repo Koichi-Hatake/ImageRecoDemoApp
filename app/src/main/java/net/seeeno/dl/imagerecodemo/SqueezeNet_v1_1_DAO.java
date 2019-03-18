@@ -27,13 +27,13 @@ public class SqueezeNet_v1_1_DAO extends NNablaImageNetDAO {
     }
 
     /** */
-    public void loadNetwork(Context context, ProgressHandler processHandler) {
+    public void loadNetwork(Context context) {
         loadParameters(context);
         if(!mIsFinishedSetParam) {
             setParameters(NETWORK_NAME);
             mIsFinishedSetParam = true;
         }
-        loadNetwork(processHandler);
+        loadNetwork();
     }
 
     /** */

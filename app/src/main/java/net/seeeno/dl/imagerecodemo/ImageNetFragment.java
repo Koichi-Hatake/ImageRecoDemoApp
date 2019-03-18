@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -173,12 +174,47 @@ public class ImageNetFragment extends AbstractDatasetFragment {
 
     public void initNetworkImpl(Context context) {
         int currentNetwork = mNetworkSpinner.getSelectedItemPosition();
-        //String network_file = mNetworkFilenames[currentNetwork];
         String network_name = mNetworkNames[currentNetwork];
 
+        InitNeuralNetworkTask initNeuralNetworkTask = new InitNeuralNetworkTask();
+        initNeuralNetworkTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, network_name);
+        mProgressHandler.setTaskTakeLong(initNeuralNetworkTask);
+        mProgressHandler.setProgress(0);
+        mProgressHandler.sendEmptyMessage(0);
+        /*
         mCurrentNetwork = ImageNetDAOFactory.getImageNetDAO(network_name);
         mCurrentNetwork.loadNetwork(context, mProgressHandler);
-        //Toast.makeText(context, "Neural Network has updated: " + mNetworkStrings[currentNetwork], Toast.LENGTH_SHORT).show();
+        */
+    }
+
+    /** */
+    public class InitNeuralNetworkTask extends TakeLongTask {
+        /** */
+        private Context mContext;
+        private String mNetName;
+        @Override
+        protected void onPreExecute() {
+        }
+        @Override
+        protected Void doInBackground(Object... params) {
+            Log.v(TAG, "Pass: InitNeuralNetwork::doInBackground()");
+            mContext = (Context)params[0];
+            mNetName = (String)params[1];
+            mCurrentNetwork = ImageNetDAOFactory.getImageNetDAO(mNetName);
+            mCurrentNetwork.loadNetwork(mContext);
+            return null;
+        }
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            Toast.makeText(mContext, "Neural Network has been loaded: " + mNetName,  Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public int getLoadedBytePercentImpl() {
+            return mCurrentNetwork.getLoadNetworkProgress();
+        }
     }
 
     /** */

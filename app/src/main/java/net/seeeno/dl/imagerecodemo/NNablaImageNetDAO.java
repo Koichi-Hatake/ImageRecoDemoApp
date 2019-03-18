@@ -164,15 +164,17 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
     }
 
     /** */
-    protected void loadNetwork(ProgressHandler progressHandler) {
+    protected void loadNetwork() {
         Log.v(TAG, "Pass: loadNetwork()");
 
+        /*
         InitNeuralNetworkTask downLoadTask = new InitNeuralNetworkTask();
         downLoadTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         progressHandler.setTaskTakeLong(downLoadTask);
         progressHandler.setProgress(0);
         progressHandler.sendEmptyMessage(0);
-        /*
+        */
+
         String fileLocation = mParamList.get(JSON_NETWORK_FILE_LOCALTION_KEY);
         String networkFilename = mParamList.get(JSON_NETWORK_FILENAME_KEY);
 
@@ -184,7 +186,7 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
 
         // Initialize network
         initNeuralNetwork();
-        */
+
     }
 
     /** */
@@ -224,13 +226,24 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
         Log.v(TAG, "Download: " + fileLocation + networkFilename);
         File nnpLocalFile = new File(mContext.getFilesDir() + "/" + networkFilename);
         // TODO: It should take another method to check.
+        /*
         if(nnpLocalFile.exists()) {
             return;
-        }
+        }*/
         // Start download
         networkFiledownload = new NetworkFileDownload(fileLocation + networkFilename, nnpLocalFile);
         networkFiledownload.startDownload();
 
+    }
+
+    /** */
+    public int getLoadNetworkProgress() {
+        int prog = 0;
+        if (networkFiledownload != null) {
+            prog = networkFiledownload.getLoadedBytePercent();
+        }
+        //Log.v(TAG, "Progress: " + prog);
+        return prog;
     }
 
     /** */
@@ -240,45 +253,6 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
         String executorName = mParamList.get(JSON_NETWORK_EXECUTOR_NAME_KEY);
         nativeInitNeuralNetwork(mContext.getFilesDir() + "/" + networkFilename, executorName);
     }
-
-    /** */
-    public class InitNeuralNetworkTask extends TakeLongTask {
-        @Override
-        protected void onPreExecute() {
-        }
-        @Override
-        protected Void doInBackground(Object... params) {
-            Log.v(TAG, "Pass: InitNeuralNetwork::doInBackground()");
-            String fileLocation = mParamList.get(JSON_NETWORK_FILE_LOCALTION_KEY);
-            String networkFilename = mParamList.get(JSON_NETWORK_FILENAME_KEY);
-
-            if (fileLocation.equals("assets")) {
-                loadNetworkFromAssets(networkFilename);
-            } else {
-                loadNetworkFromRemote();
-            }
-            return null;
-        }
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-        @Override
-        protected void onPostExecute(Void result) {
-            // Initialize network
-            initNeuralNetwork();
-            Toast.makeText(mContext, "Neural Network has been loaded.",  Toast.LENGTH_SHORT).show();
-        }
-        @Override
-        public int getLoadedBytePercentImpl() {
-            int prog = 0;
-            if (networkFiledownload != null) {
-                prog = networkFiledownload.getLoadedBytePercent();
-            }
-            //Log.v(TAG, "Progress: " + prog);
-            return prog;
-        }
-    }
-
 
     /** */
     public float[] predict(Bitmap bitmap) {
