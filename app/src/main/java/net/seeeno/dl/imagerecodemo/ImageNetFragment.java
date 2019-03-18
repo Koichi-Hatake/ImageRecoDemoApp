@@ -36,15 +36,11 @@ public class ImageNetFragment extends AbstractDatasetFragment {
 
     private static final String TAG = "ImageNetFragment";
     private OnFragmentInteractionListener mListener;
-    //private String[] mNetworkStrings;
-    //private String[] mNetworkFilenames;
     private String[] mNetworkNames;
-    //private String[] mClassList;
     private ImageView mImageNetImageView;
     private Spinner mNetworkSpinner;
     private TextView mResultText;
     private TextView mElapsedTimeText;
-    private ProgressBar mProgressBar;
 
     private ProgressHandler mProgressHandler;
     private int mLastProcessedTime = 0;
@@ -82,10 +78,10 @@ public class ImageNetFragment extends AbstractDatasetFragment {
         mElapsedTimeText = (TextView)v.findViewById(R.id.elapsed_time_text);
         mResultText = (TextView)v.findViewById(R.id.imagenet_result_str);
         mNetworkSpinner = (Spinner) v.findViewById(R.id.imagenet_network_spinner);
-        mProgressBar = (ProgressBar)v.findViewById(R.id.progress_bar);
+        ProgressBar progressBar = (ProgressBar)v.findViewById(R.id.progress_bar);
         // Init Progress handler
         mProgressHandler = new ProgressHandler();
-        mProgressHandler.setProgressBar(mProgressBar);
+        mProgressHandler.setProgressBar(progressBar);
         // Register spinner listener
         mNetworkSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -96,16 +92,6 @@ public class ImageNetFragment extends AbstractDatasetFragment {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-        /*
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                //Toast.makeText(HomeFragment.this.getContext(), "" + position,
-                //        Toast.LENGTH_SHORT).show();
-                mOriginalImageView.setImageResource(mThumbIds[position]);
-            }
-        }); */
 
         return v;
     }
@@ -181,14 +167,10 @@ public class ImageNetFragment extends AbstractDatasetFragment {
         mProgressHandler.setTaskTakeLong(initNeuralNetworkTask);
         mProgressHandler.setProgress(0);
         mProgressHandler.sendEmptyMessage(0);
-        /*
-        mCurrentNetwork = ImageNetDAOFactory.getImageNetDAO(network_name);
-        mCurrentNetwork.loadNetwork(context, mProgressHandler);
-        */
     }
 
     /** */
-    public class InitNeuralNetworkTask extends TakeLongTask {
+    private class InitNeuralNetworkTask extends TakeLongTask {
         /** */
         private Context mContext;
         private String mNetName;
@@ -218,7 +200,7 @@ public class ImageNetFragment extends AbstractDatasetFragment {
     }
 
     /** */
-    public class PredictTask extends TakeLongTask {
+    private class PredictTask extends TakeLongTask {
 
         private Bitmap mResizedBitmap;
         private int mProcessTime = 0;

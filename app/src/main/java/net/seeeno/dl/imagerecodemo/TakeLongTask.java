@@ -10,7 +10,6 @@ abstract class TakeLongTask extends AsyncTask<Object, Void, Void> {
 
     /** */
     abstract int getLoadedBytePercentImpl();
-
     /** */
     public int getLoadedBytePercent() {
         return getLoadedBytePercentImpl();

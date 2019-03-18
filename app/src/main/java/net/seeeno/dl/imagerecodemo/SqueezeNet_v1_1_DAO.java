@@ -27,6 +27,7 @@ public class SqueezeNet_v1_1_DAO extends NNablaImageNetDAO {
     }
 
     /** */
+    @Override
     public void loadNetwork(Context context) {
         loadParameters(context);
         if(!mIsFinishedSetParam) {
@@ -37,16 +38,19 @@ public class SqueezeNet_v1_1_DAO extends NNablaImageNetDAO {
     }
 
     /** */
+    @Override
     public String getName() {
         return NETWORK_NAME;
     }
 
     /** */
+    @Override
     public float[] predict(Bitmap bitmap) {
         return super.predict(bitmap);
     }
 
     /** */
+    @Override
     public String getCategoryName(int index) {
         return super.getCategoryName(index);
     }

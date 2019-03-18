@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +23,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  *
@@ -84,8 +81,8 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
 
             for (int i = 0; i < jArry.length(); i++) {
                 JSONObject jo_inside = jArry.getJSONObject(i);
-                Log.d(TAG, "Details-->" + jo_inside.getString(JSON_NETWORK_NAME_KEY));
-                Log.d(TAG, "Details-->" + jo_inside.getString(JSON_NETWORK_FILENAME_KEY));
+                //Log.d(TAG, "Details-->" + jo_inside.getString(JSON_NETWORK_NAME_KEY));
+                //Log.d(TAG, "Details-->" + jo_inside.getString(JSON_NETWORK_FILENAME_KEY));
 
                 String network_name_value = jo_inside.getString(JSON_NETWORK_NAME_KEY);
                 String network_filename_value = jo_inside.getString(JSON_NETWORK_FILENAME_KEY);
@@ -167,14 +164,6 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
     protected void loadNetwork() {
         Log.v(TAG, "Pass: loadNetwork()");
 
-        /*
-        InitNeuralNetworkTask downLoadTask = new InitNeuralNetworkTask();
-        downLoadTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-        progressHandler.setTaskTakeLong(downLoadTask);
-        progressHandler.setProgress(0);
-        progressHandler.sendEmptyMessage(0);
-        */
-
         String fileLocation = mParamList.get(JSON_NETWORK_FILE_LOCALTION_KEY);
         String networkFilename = mParamList.get(JSON_NETWORK_FILENAME_KEY);
 
@@ -226,10 +215,9 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
         Log.v(TAG, "Download: " + fileLocation + networkFilename);
         File nnpLocalFile = new File(mContext.getFilesDir() + "/" + networkFilename);
         // TODO: It should take another method to check.
-        /*
         if(nnpLocalFile.exists()) {
             return;
-        }*/
+        }
         // Start download
         networkFiledownload = new NetworkFileDownload(fileLocation + networkFilename, nnpLocalFile);
         networkFiledownload.startDownload();
@@ -237,12 +225,12 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
     }
 
     /** */
+    @Override
     public int getLoadNetworkProgress() {
         int prog = 0;
         if (networkFiledownload != null) {
             prog = networkFiledownload.getLoadedBytePercent();
         }
-        //Log.v(TAG, "Progress: " + prog);
         return prog;
     }
 
@@ -255,6 +243,7 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
     }
 
     /** */
+    @Override
     public float[] predict(Bitmap bitmap) {
         int inputWidth = getInputWidth();
         int inputHeight = getInputHeight();
@@ -279,21 +268,25 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
     }
 
     /** */
+    @Override
     public String getCategoryName(int index) {
         return (String)mCategoryList.get(index);
     }
 
     /** */
+    @Override
     public int getInputWidth() {
         return Integer.parseInt(mParamList.get(JSON_INPUT_WIDTH_KEY));
     }
 
     /** */
+    @Override
     public int getInputHeight() {
         return Integer.parseInt(mParamList.get(JSON_INPUT_HEIGHT_KEY));
     }
 
     /** */
+    @Override
     public int getInputChannel() {
         return 3;
     }
