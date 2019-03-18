@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +25,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  *
@@ -51,7 +54,7 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
     private static boolean mIsFinishedLoadParam = false;
 
     /** */
-    private ArrayList<HashMap<String, String>> mNetworkList = new ArrayList<HashMap<String, String>>();
+    private static ArrayList<HashMap<String, String>> mNetworkList = new ArrayList<HashMap<String, String>>();
     private HashMap<String, String> mParamList;
     private int mInputChannel = 3;
     private Context mContext;
@@ -161,28 +164,40 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
     }
 
     /** */
-    protected void loadNetwork() {
+    protected void loadNetwork(ProgressHandler progressHandler) {
         Log.v(TAG, "Pass: loadNetwork()");
+
+        InitNeuralNetworkTask downLoadTask = new InitNeuralNetworkTask();
+        downLoadTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        progressHandler.setTaskTakeLong(downLoadTask);
+        progressHandler.setProgress(0);
+        progressHandler.sendEmptyMessage(0);
+        /*
         String fileLocation = mParamList.get(JSON_NETWORK_FILE_LOCALTION_KEY);
         String networkFilename = mParamList.get(JSON_NETWORK_FILENAME_KEY);
+
         if(fileLocation.equals("assets")) {
             loadNetworkFromAssets(networkFilename);
         } else {
-            loadNetworkFromServer();
+            loadNetworkFromRemote();
         }
+
+        // Initialize network
+        initNeuralNetwork();
+        */
     }
 
     /** */
     private void loadNetworkFromAssets(String networkFilename) {
         // Copy network file from assets to local
         try {
-            File nnpFile = new File(mContext.getFilesDir() + "/" + networkFilename);
+            File nnpLocalFile = new File(mContext.getFilesDir() + "/" + networkFilename);
             // TODO: It should take another method to check.
-            if(nnpFile.exists()) {
+            if(nnpLocalFile.exists()) {
                 return;
             }
             InputStream inputStream = mContext.getAssets().open(networkFilename);
-            FileOutputStream fileOutputStream = new FileOutputStream(nnpFile, false);
+            FileOutputStream fileOutputStream = new FileOutputStream(nnpLocalFile, false);
             byte[] buffer = new byte[1024];
             int length = 0;
             while ((length = inputStream.read(buffer)) >= 0) {
@@ -197,17 +212,73 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
     }
 
     /** */
-    private void loadNetworkFromServer() {
+    private NetworkFileDownload networkFiledownload;
+
+    /** */
+    private void loadNetworkFromRemote() {
+        // Load parameters
+        String networkFilename = mParamList.get(JSON_NETWORK_FILENAME_KEY);
+        String fileLocation = mParamList.get(JSON_NETWORK_FILE_LOCALTION_KEY);
+
+        // Open local file
+        Log.v(TAG, "Download: " + fileLocation + networkFilename);
+        File nnpLocalFile = new File(mContext.getFilesDir() + "/" + networkFilename);
+        // TODO: It should take another method to check.
+        if(nnpLocalFile.exists()) {
+            return;
+        }
+        // Start download
+        networkFiledownload = new NetworkFileDownload(fileLocation + networkFilename, nnpLocalFile);
+        networkFiledownload.startDownload();
 
     }
 
     /** */
-    protected void initNeuralNetwork() {
+    private void initNeuralNetwork() {
         Log.v(TAG, "Pass: initNeuralNetwork()");
         String networkFilename = mParamList.get(JSON_NETWORK_FILENAME_KEY);
         String executorName = mParamList.get(JSON_NETWORK_EXECUTOR_NAME_KEY);
         nativeInitNeuralNetwork(mContext.getFilesDir() + "/" + networkFilename, executorName);
     }
+
+    /** */
+    public class InitNeuralNetworkTask extends TakeLongTask {
+        @Override
+        protected void onPreExecute() {
+        }
+        @Override
+        protected Void doInBackground(Object... params) {
+            Log.v(TAG, "Pass: InitNeuralNetwork::doInBackground()");
+            String fileLocation = mParamList.get(JSON_NETWORK_FILE_LOCALTION_KEY);
+            String networkFilename = mParamList.get(JSON_NETWORK_FILENAME_KEY);
+
+            if (fileLocation.equals("assets")) {
+                loadNetworkFromAssets(networkFilename);
+            } else {
+                loadNetworkFromRemote();
+            }
+            return null;
+        }
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            // Initialize network
+            initNeuralNetwork();
+            Toast.makeText(mContext, "Neural Network has been loaded.",  Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public int getLoadedBytePercentImpl() {
+            int prog = 0;
+            if (networkFiledownload != null) {
+                prog = networkFiledownload.getLoadedBytePercent();
+            }
+            //Log.v(TAG, "Progress: " + prog);
+            return prog;
+        }
+    }
+
 
     /** */
     public float[] predict(Bitmap bitmap) {
@@ -225,23 +296,6 @@ public abstract class NNablaImageNetDAO implements ImageNetDAO {
             rgb_array[i] = Color.red(color_array[i]); // Red
             rgb_array[colorOffset + i] = Color.green(color_array[i]); // Green
             rgb_array[colorOffset*2 + i] = Color.blue(color_array[i]); // Blue
-        }
-
-        // To confirm rgb_array
-        /*
-        int[][][] rgb_array_test = new int[inputChannel][inputHeight][inputWidth];
-        for(int i=0; i< inputHeight; i++) {
-            for(int j=0; j< inputWidth; j++) {
-                int pixel = bitmap.getPixel(j, i);
-                rgb_array_test[0][i][j] = Color.red(pixel);
-                rgb_array_test[1][i][j] = Color.green(pixel);
-                rgb_array_test[2][i][j] = Color.blue(pixel);
-            }
-        }
-        */
-
-        for(int i=0; i < 10; i++) {
-            Log.v(TAG,"RGB Data: #" + Integer.toHexString(rgb_array[i]) + ":" + Integer.toHexString(rgb_array[colorOffset + i]) + ":" + Integer.toHexString(rgb_array[colorOffset*2]));
         }
 
         // Predict

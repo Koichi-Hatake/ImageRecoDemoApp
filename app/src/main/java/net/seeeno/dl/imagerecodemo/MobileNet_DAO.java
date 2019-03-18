@@ -5,20 +5,19 @@
 package net.seeeno.dl.imagerecodemo;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 
-public class ResNet18_DAO extends NNablaImageNetDAO {
+public class MobileNet_DAO extends NNablaImageNetDAO {
 
     /** */
-    private static final String NETWORK_NAME = "ResNet_18";
+    private static final String NETWORK_NAME = "MobileNet";
     /** */
-    private static final ResNet18_DAO dao = new ResNet18_DAO();
+    private static final MobileNet_DAO dao = new MobileNet_DAO();
     /** */
     private static boolean mIsFinishedSetParam = false;
 
     /** */
-    private ResNet18_DAO() {
+    private MobileNet_DAO() {
 
     }
 

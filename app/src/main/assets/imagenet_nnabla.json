@@ -2,8 +2,35 @@
   "network_list": [
     {
       "name": "ResNet_18",
-      "network_filename": "imagenet_resnet_18.nnp",
-      "file_location": "assets",
+      "network_filename": "Resnet-18.nnp",
+      "file_location": "https://nnabla.org/pretrained-models/nnp_models/imagenet/Resnet-18/",
+      "executor_name": "Executor",
+      "category_filename": "category_names.txt",
+      "input_width": "320",
+      "input_height": "320"
+    },
+    {
+      "name": "MobileNet",
+      "network_filename": "MobileNet.nnp",
+      "file_location": "https://nnabla.org/pretrained-models/nnp_models/imagenet/MobileNet/",
+      "executor_name": "Executor",
+      "category_filename": "category_names.txt",
+      "input_width": "320",
+      "input_height": "320"
+    },
+    {
+      "name": "SENet-154",
+      "network_filename": "SENet-154.nnp",
+      "file_location": "https://nnabla.org/pretrained-models/nnp_models/imagenet/SENet-154/",
+      "executor_name": "Executor",
+      "category_filename": "category_names.txt",
+      "input_width": "320",
+      "input_height": "320"
+    },
+    {
+      "name": "SqueezeNet_v1.1",
+      "network_filename": "SqueezeNet-1.1.nnp",
+      "file_location": "https://nnabla.org/pretrained-models/nnp_models/imagenet/SqueezeNet-1.1/",
       "executor_name": "Executor",
       "category_filename": "category_names.txt",
       "input_width": "320",
@@ -18,5 +45,7 @@
       "input_width": "320",
       "input_height": "320"
     }
+
+
   ]
 }

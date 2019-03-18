@@ -5,20 +5,19 @@
 package net.seeeno.dl.imagerecodemo;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 
-public class ResNet18_DAO extends NNablaImageNetDAO {
+public class SENet154_DAO extends NNablaImageNetDAO {
 
     /** */
-    private static final String NETWORK_NAME = "ResNet_18";
+    private static final String NETWORK_NAME = "SENet-154";
     /** */
-    private static final ResNet18_DAO dao = new ResNet18_DAO();
+    private static final SENet154_DAO dao = new SENet154_DAO();
     /** */
     private static boolean mIsFinishedSetParam = false;
 
     /** */
-    private ResNet18_DAO() {
+    private SENet154_DAO() {
 
     }
 
@@ -35,7 +34,6 @@ public class ResNet18_DAO extends NNablaImageNetDAO {
             mIsFinishedSetParam = true;
         }
         loadNetwork(processHandler);
-        //initNeuralNetwork();
     }
 
     /** */

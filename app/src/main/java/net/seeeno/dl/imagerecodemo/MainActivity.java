@@ -172,6 +172,6 @@ public class MainActivity extends AppCompatActivity implements
      * A native method that is implemented by the 'nnabla_android' native library,
      * which is packaged with this application.
      */
-    private native void nativeInitNeuralNetwork(String nppPath, String networkName);
-    private native float[] nativePredict(int[] imageData);
+    //private native void nativeInitNeuralNetwork(String nppPath, String networkName);
+    //private native float[] nativePredict(int[] imageData);
 }

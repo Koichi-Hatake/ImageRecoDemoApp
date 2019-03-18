@@ -5,20 +5,19 @@
 package net.seeeno.dl.imagerecodemo;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 
-public class ResNet18_DAO extends NNablaImageNetDAO {
+public class SqueezeNet_v1_1_DAO extends NNablaImageNetDAO {
 
     /** */
-    private static final String NETWORK_NAME = "ResNet_18";
+    private static final String NETWORK_NAME = "SqueezeNet_v1.1";
     /** */
-    private static final ResNet18_DAO dao = new ResNet18_DAO();
+    private static final SqueezeNet_v1_1_DAO dao = new SqueezeNet_v1_1_DAO();
     /** */
     private static boolean mIsFinishedSetParam = false;
 
     /** */
-    private ResNet18_DAO() {
+    private SqueezeNet_v1_1_DAO() {
 
     }
 
@@ -35,7 +34,6 @@ public class ResNet18_DAO extends NNablaImageNetDAO {
             mIsFinishedSetParam = true;
         }
         loadNetwork(processHandler);
-        //initNeuralNetwork();
     }
 
     /** */
@@ -52,5 +50,4 @@ public class ResNet18_DAO extends NNablaImageNetDAO {
     public String getCategoryName(int index) {
         return super.getCategoryName(index);
     }
-
 }
