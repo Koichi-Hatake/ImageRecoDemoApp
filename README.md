@@ -16,7 +16,7 @@ This is easy sample Android application to learn first step of image classificat
 This uses trained model by ImageNet as network model of neural network.
 These models are shared on following site.
 ImageNet Models: https://nnabla.readthedocs.io/en/latest/python/api/models/imagenet.html  
-This application is supporting three networks in it.
+This application is supporting four networks in it.
 + ResNet-18
 + MobileNet
 + SENet-154
